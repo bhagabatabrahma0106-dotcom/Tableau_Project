@@ -1,0 +1,6 @@
+*.hyper
+*.tde
+*.twbr
+.DS_Store
+Thumbs.db
+~$*

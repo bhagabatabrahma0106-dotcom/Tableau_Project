@@ -1,0 +1,19 @@
+name: Validate Tableau workbook
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check nonempty tracked files and parse TWB XML
+        run: |
+          git ls-files -z | xargs -0 -r -n1 test -s
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          f=Path("tableau/Dashboard.twb")
+          root=ET.parse(f).getroot()
+          assert root.tag=="workbook"
+          assert root.find("datasources") is not None
+          print("PASS: XML workbook structure")
+          PY
